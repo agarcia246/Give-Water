@@ -1,0 +1,3 @@
+/* Keep this file minimal so Tailwind controls styling.
+   Focus visibility is handled per-component with focus-visible:ring utilities
+   to avoid double indicators and support light/dark contexts. */
