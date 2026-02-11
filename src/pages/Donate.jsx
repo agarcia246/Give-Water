@@ -10,16 +10,20 @@ const PRESET_AMOUNTS = [1, 5, 10, 20];
 const MIN_CUSTOM = 1;
 const MAX_CUSTOM = 10000;
 
+// Backend base URL: use env when available, otherwise fall back to Render URL
+const API_BASE =
+  import.meta.env.VITE_API_BASE || "https://give-water-backend.onrender.com";
+
 function cn(...xs) {
   return xs.filter(Boolean).join(" ");
 }
 
 const clip_dict = [
-  {title: "Clip 1", path: "/clip1.jpeg"},
-  {title: "Clip 2", path: "/clip2.jpeg"},
-  {title: "Clip 3", path: "/clip3.jpeg"},
-  {title: "Clip 4", path: "/clip4.jpeg"},
-]
+  { title: "Clip 1", file: "clip1.jpeg" },
+  { title: "Clip 2", file: "clip2.jpeg" },
+  { title: "Clip 3", file: "clip3.jpeg" },
+  { title: "Clip 4", file: "clip4.jpeg" },
+];
 
 function AmountButton({ amount, active, onClick }) {
   return (
@@ -44,6 +48,8 @@ export default function Donate() {
   // Example fundraising values (replace with real data if you have it)
   const raised = 2900;
   const goal = 3000;
+
+  const base = import.meta.env.BASE_URL;
 
   const [selectedPreset, setSelectedPreset] = useState(5);
   const [customAmountRaw, setCustomAmountRaw] = useState("");
@@ -92,7 +98,7 @@ export default function Donate() {
       setDonating(true);
       setError("");
 
-      const res = await fetch("/api/create-checkout-session", {
+      const res = await fetch(`${API_BASE}/api/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -125,11 +131,11 @@ export default function Donate() {
         className="relative min-h-screen scroll-mt-20"
         aria-label="Hero"
       >
-        {/* Background image: put hero.jpg in /public or change URL */}
+        {/* Background image: put hero.jpeg in /public or change URL */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-zinc-900"
           style={{
-            backgroundImage: "url(/hero.jpeg)",
+            backgroundImage: `url(${base}hero.jpeg)`,
           }}
           aria-hidden="true"
         />
@@ -205,7 +211,7 @@ export default function Donate() {
           {/* Replace with your <video> or embedded player later */}
           <VideoPlaceholder
             label="Main campaign video placeholder"
-            posterUrl="/Video.jpeg"
+            posterUrl={`${base}Video.jpeg`}
           />
         </div>
       </section>
@@ -307,7 +313,7 @@ export default function Donate() {
               <div className="mt-3">
                 <VideoPlaceholder
                   label={`${clip.title} placeholder`}
-                  posterUrl={clip.path}
+                  posterUrl={`${base}${clip.file}`}
                   compact
                 />
               </div>
